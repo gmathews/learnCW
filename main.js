@@ -1,35 +1,23 @@
 // Configuration
-const decayTime = 1005; // Tone drop off in milliseconds
 const frequency = 600; // Tone frequency
 
 // Setup a tone generator
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const gainNode = audioContext.createGain();
-const useGainNode = decayTime > 0;
-if( useGainNode ){
-    gainNode.connect( audioContext.destination );
-}
 
 let soundPlaying = false;
 let keyPressed = 0;
 let currentOscillator = 0;
-let oldOscillator = 0;
+let toneStart = 0;
 
 // Reusable tone generation
 function createToneGenerator(){
+    toneStart = Date.now();
     const oscillator = audioContext.createOscillator();
     // Select a frequency
     oscillator.type = 'sine';
     oscillator.frequency.value = frequency;
 
-    // See if we will ramp down later
-    if( useGainNode ){
-        oscillator.connect( gainNode );
-        gainNode.gain.setValueAtTime( 1, audioContext.currentTime );
-    }else{
-        oscillator.connect( audioContext.destination );
-    }
-
+    oscillator.connect( audioContext.destination );
     oscillator.start();
     soundPlaying = true;
     currentOscillator = oscillator;
@@ -41,28 +29,10 @@ function beQuiet(){
         return;
     }
 
-    // We didn't have time to stop gracefully
-    if( oldOscillator ){
-        oldOscillator.stop();
-    }
-
-    // Save, in case we create a new sound
-    oldOscillator = currentOscillator;
-    function donePlaying(){
-        oldOscillator.stop();
-        soundPlaying = false;
-        console.log('Done playing sound');
-    }
-
-    if( useGainNode ){
-        gainNode.gain.setValueAtTime(gainNode.gain.value, audioContext.currentTime);
-        // gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + ( decayTime / 1000 ) );
-        gainNode.gain.setTargetAtTime(0, audioContext.currentTime, ( decayTime / 1000 ) );
-        // Quiet time
-        setTimeout( donePlaying, decayTime );
-    }else{
-        donePlaying();
-    }
+    currentOscillator.stop();
+    soundPlaying = false;
+    let toneLength = Date.now() - toneStart;
+    // console.log('Done playing sound after: ' + toneLength );
 }
 
 function printKey( intro, keycode ){
@@ -92,7 +62,7 @@ window.addEventListener( 'keydown', function( downEvent ){
 
     // Track what key we need to let up
     keyPressed = downEvent.key;
-    printKey( 'DOWN: ', keyPressed );
+    // printKey( 'DOWN: ', keyPressed );
 
     // Start making noise
     createToneGenerator();
@@ -109,7 +79,7 @@ window.addEventListener( 'keyup', function( upEvent ){
     upEvent.preventDefault();
 
     const upKeycode = upEvent.key;
-    printKey( 'UP: ', upKeycode );
+    // printKey( 'UP: ', upKeycode );
     // Stop making noise
     if( upKeycode == keyPressed ){
         beQuiet();
