@@ -77,6 +77,7 @@ function calcWPM( averageDotSize ){
 }
 
 // TODO: given some n elements, determine the size of a dot
+// TODO: given some n elements, determine the symbol they represent
 // TODO: given a element of length k, determine if it is a dash or dot.
 // TODO: given a gap of length k, determine if it is a letter, element, or word gap
 
