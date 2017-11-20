@@ -15,8 +15,11 @@
 
         <script src="main.js" type="application/javascript"></script>
 
-        <div>
-            <a class="keyButton" id="key" href="#">[0]</a>
+        <div class="toneTime">
+            <p id="toneTime">0</p>
+        </div>
+        <div class="keyButton" onmousedown="createToneGenerator()" onmouseup="beQuiet()">
+            <a id="key"  href="#">[Press Here]</a>
         </div>
     </body>
 </html>

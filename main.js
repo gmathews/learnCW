@@ -11,6 +11,10 @@ let toneStart = 0;
 
 // Reusable tone generation
 function createToneGenerator(){
+    if( soundPlaying ){
+        return;
+    }
+
     const oscillator = audioContext.createOscillator();
     // Select a frequency
     oscillator.type = 'sine';
@@ -36,10 +40,13 @@ function beQuiet(){
     let timeOfLastZero = toneStart + ( halfWavelengthDuration * completedHalfWavelengths );
     let timeOfNextZero = timeOfLastZero + halfWavelengthDuration;
 
-    console.log( 'Total Tone Length ' + ( timeOfNextZero - toneStart ) * 1000 );
     currentOscillator.stop( timeOfNextZero );
     soundPlaying = false;
-    console.log( 'Done playing sound after: ' + ( toneLength * 1000 ) );
+
+    // Display nicely
+    let displayTime = Math.ceil( ( timeOfNextZero - toneStart ) * 1000 );
+    document.getElementById("toneTime").style.color = "green";
+    document.getElementById("toneTime").innerHTML = displayTime;
 }
 
 function printKey( intro, keycode ){
@@ -55,8 +62,8 @@ function filterKey( key ){
 
 // On while key is down make a tone
 window.addEventListener( 'keydown', function( downEvent ){
-    // Do nothing if the event was already processed or we are already playing sound
-    if( downEvent.defaultPrevented || soundPlaying ){
+    // Do nothing if the event was already processed
+    if( downEvent.defaultPrevented ){
         return;
     }
     // Cancel the default action to avoid it being handled twice

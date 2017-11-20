@@ -11,14 +11,34 @@ body, html {
 }
 
 a {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
     color: white;
     text-decoration: none;
 }
 
 .keyButton {
+    position: fixed;
+    left: 25%;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.33);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     text-align: center;
+    padding: 2em;
+    margin: 2em;
+    width: 50%;
+}
+
+.toneTime {
+    position: fixed;
+    right: 10%;
+    top: 10%;
+    text-align: center;
     padding: 1em;
     margin: 1em;
+    font-size: 200%;
 }
