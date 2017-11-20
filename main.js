@@ -11,13 +11,13 @@ let toneStart = 0;
 
 // Reusable tone generation
 function createToneGenerator(){
-    toneStart = Date.now();
     const oscillator = audioContext.createOscillator();
     // Select a frequency
     oscillator.type = 'sine';
     oscillator.frequency.value = frequency;
 
     oscillator.connect( audioContext.destination );
+    toneStart = audioContext.currentTime;
     oscillator.start();
     soundPlaying = true;
     currentOscillator = oscillator;
@@ -29,10 +29,17 @@ function beQuiet(){
         return;
     }
 
-    currentOscillator.stop();
+    // Calculate our stopping time
+    let halfWavelengthDuration = 0.5 / frequency;
+    let toneLength = audioContext.currentTime - toneStart;
+    let completedHalfWavelengths = Math.floor( toneLength / halfWavelengthDuration );
+    let timeOfLastZero = toneStart + ( halfWavelengthDuration * completedHalfWavelengths );
+    let timeOfNextZero = timeOfLastZero + halfWavelengthDuration;
+
+    console.log( 'Total Tone Length ' + ( timeOfNextZero - toneStart ) * 1000 );
+    currentOscillator.stop( timeOfNextZero );
     soundPlaying = false;
-    let toneLength = Date.now() - toneStart;
-    // console.log('Done playing sound after: ' + toneLength );
+    console.log( 'Done playing sound after: ' + ( toneLength * 1000 ) );
 }
 
 function printKey( intro, keycode ){
@@ -54,7 +61,7 @@ window.addEventListener( 'keydown', function( downEvent ){
     }
     // Cancel the default action to avoid it being handled twice
     downEvent.preventDefault();
-
+    downEvent.stopPropagation()
     // Ignore if this is a lousy key
     if( filterKey( downEvent.key ) ){
         return;
@@ -77,6 +84,7 @@ window.addEventListener( 'keyup', function( upEvent ){
     }
     // Cancel the default action to avoid it being handled twice
     upEvent.preventDefault();
+    upEvent.stopPropagation()
 
     const upKeycode = upEvent.key;
     // printKey( 'UP: ', upKeycode );
