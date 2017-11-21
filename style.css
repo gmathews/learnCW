@@ -33,7 +33,7 @@ a {
     width: 50%;
 }
 
-.toneTime {
+.toneType {
     position: fixed;
     right: 10%;
     top: 10%;
@@ -41,4 +41,13 @@ a {
     padding: 1em;
     margin: 1em;
     font-size: 200%;
+}
+.toneTime {
+    position: fixed;
+    right: 30%;
+    top: 1em;
+    text-align: center;
+    padding: 1em;
+    margin: 1em;
+    font-size: 150%;
 }

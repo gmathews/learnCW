@@ -1,15 +1,7 @@
 // Configuration
 const frequency = 600; // Tone frequency
-const desiredWPM = 4; // Desired Words Per Minute
 
 // End Configuration
-
-const dotLength = 1200 / desiredWPM; // Milliseconds
-// Since these are standard to morse code, don't change these
-const dashLength = dotLength * 3;
-const elementGap = dotLength; // The gap between the dots and dashes in a character
-const minLetterGap = dotLength * 3; // Various teaching methods have you make these longer
-const minWordGap = dotLength * 7;
 
 // Setup a tone generator
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -18,6 +10,9 @@ let soundPlaying = false;
 let keyPressed = 0;
 let currentOscillator = 0;
 let toneStart = 0;
+let silenceStart = 0;
+let updater = 0;
+let toneTranslator = new CWTranslator();
 
 // Reusable tone generation
 function createToneGenerator(){
@@ -35,6 +30,16 @@ function createToneGenerator(){
     oscillator.start();
     soundPlaying = true;
     currentOscillator = oscillator;
+
+    // Update time
+    document.getElementById('silenceTime').innerHTML = 0;
+    clearInterval( updater );
+    updater = setInterval( () => {
+        let toneLength = audioContext.currentTime - toneStart;
+        // Display nicely
+        let displayTime = Math.ceil( toneLength * 100 );
+        document.getElementById('toneTime').innerHTML = displayTime;
+    }, 10);
 }
 
 // End the tone
@@ -53,12 +58,32 @@ function beQuiet(){
     currentOscillator.stop( timeOfNextZero );
     soundPlaying = false;
 
-    // Display nicely
-    let displayTime = Math.ceil( ( timeOfNextZero - toneStart ) * 1000 );
-    document.getElementById("toneTime").style.color = "green";
-    document.getElementById("toneTime").innerHTML = displayTime;
-}
+    let element = toneLength * 1000;
+    toneTranslator.addElement( element );
+    document.getElementById('toneTime').style.color = 'green';
+    if( toneTranslator.isDash( element ) ){
+        document.getElementById('toneType').innerHTML = 'dah';
+    }else if( toneTranslator.isDot( element ) ){
+        document.getElementById('toneType').innerHTML = 'di';
+    }else{ // Confusing and bad
+        document.getElementById('toneType').innerHTML = ':(';
+        document.getElementById('toneTime').style.color = 'red';
+    }
 
+    silenceStart = audioContext.currentTime;
+    // Update time
+    clearInterval( updater );
+    updater = setInterval( () => {
+        let silenceLength = audioContext.currentTime - silenceStart;
+        // Display nicely
+        let displayTime = Math.ceil( silenceLength * 100 );
+        document.getElementById('silenceTime').innerHTML = displayTime;
+        // At this point, no need to keep updating
+        if( toneTranslator.gapType( silenceLength * 1000 ) == gapTypes.WORD ){
+            clearInterval( updater );
+        }
+    }, 10);
+}
 function printKey( intro, keycode ){
     console.log( intro + "'" + keycode + "'" );
 }
@@ -66,20 +91,9 @@ function printKey( intro, keycode ){
 // Only accept the keys we want
 function filterKey( key ){
     // Tab messes things up
-    return key == 'Tab';
+    return key == 'Tab' || key != 'Shift'; // TODO: only use shift for debug
 
 }
-
-// Used to calculate Words Per Minute from our current dot size
-function calcWPM( averageDotSize ){
-    // averageDotSize is in milliseconds
-    return 1200 / averageDotSize;
-}
-
-// TODO: given some n elements, determine the size of a dot
-// TODO: given some n elements, determine the symbol they represent
-// TODO: given a element of length k, determine if it is a dash or dot.
-// TODO: given a gap of length k, determine if it is a letter, element, or word gap
 
 // On while key is down make a tone
 window.addEventListener( 'keydown', function( downEvent ){

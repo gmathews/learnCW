@@ -13,10 +13,14 @@
     </head>
     <body>
 
+        <script src="CWTranslate.js" type="application/javascript"></script>
         <script src="main.js" type="application/javascript"></script>
-
+        <div class="toneType">
+            <p id="toneType">_</p>
+        </div>
         <div class="toneTime">
             <p id="toneTime">0</p>
+            <p id="silenceTime">0</p>
         </div>
         <div class="keyButton" onmousedown="createToneGenerator()" onmouseup="beQuiet()">
             <a id="key"  href="#">[Press Here]</a>
