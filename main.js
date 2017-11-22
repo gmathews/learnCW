@@ -105,8 +105,33 @@ function beQuiet(){
         // Display nicely
         let displayTime = Math.ceil( silenceLength );
         document.getElementById('silenceTime').innerHTML = displayTime + 'ms';
+
+
+        // Build gap target bar
+        let gapOverflowPercentage = toneTranslator.gapOverflowPercentage( silenceLength ) * 100;
+        let gapWordPercentage = toneTranslator.gapWordPercentage( silenceLength ) * 100;
+        let gapLetterPercentage = toneTranslator.gapLetterPercentage( silenceLength ) * 100;
+        let gapElementPercentage = toneTranslator.gapElementPercentage( silenceLength ) * 100;
+
+        let gapOverflowBarStyle = document.getElementById( 'gapOverflowBar' ).style;
+        let gapWordBarStyle = document.getElementById( 'gapWordBar' ).style;
+        let gapLetterBarStyle = document.getElementById( 'gapLetterBar' ).style;
+        let gapElementBarStyle = document.getElementById( 'gapElementBar' ).style;
+
+        gapOverflowBarStyle.width = gapOverflowPercentage + '%';
+        gapWordBarStyle.width = gapWordPercentage + '%';
+        gapLetterBarStyle.width = gapLetterPercentage + '%';
+        gapElementBarStyle.width = gapElementPercentage + '%';
+
+        let hue = gapElementPercentage * 1.2;
+        gapElementBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+        hue = gapLetterPercentage * 1.2;
+        gapLetterBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+        hue = gapWordPercentage * 1.2;
+        gapWordBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+
         // At this point, no need to keep updating
-        if( toneTranslator.gapType( silenceLength ) == gapTypes.WORD ){
+        if( gapOverflowPercentage >= 100 ){
             clearInterval( updater );
         }
     }, 10);

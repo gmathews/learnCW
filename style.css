@@ -80,6 +80,7 @@ a {
 #gapOverflowBar{
     width: 0;
     height: 30px;
+    background-color: red;
 }
 #gapWordProgress{
     position: fixed;
