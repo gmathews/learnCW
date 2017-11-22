@@ -43,7 +43,7 @@ class CWTranslator{
         if( this.elements.length > numberOfElementsToStore ){
             this.elements.shift();
         }
-        this._updateAverageDotSize();
+        // this._updateAverageDotSize();
     }
 
     // Given some n elements, determine the size of a dot
@@ -61,21 +61,39 @@ class CWTranslator{
     static _between( min, num, max ){
         return num >= min && num <= max;
     }
-    static _betweenMarginOfError( num, desiredAmount ){
-        return CWTranslator._between( desiredAmount - desiredAmount * marginOfError, num,
-            desiredAmount + desiredAmount * marginOfError );
+    static _betweenMarginOfError( num, desiredAmount, marginOfErrorMs ){
+        return CWTranslator._between( desiredAmount - marginOfErrorMs, num,
+            desiredAmount + marginOfErrorMs );
     }
 
-    // Given a element of length k, determine if it is a dot.
+    // Given a element of length k in ms, determine if it is a dot.
     isDot( element ){
-        return CWTranslator._betweenMarginOfError( element, this.averageDotSize );
+        const marginOfErrorMs = marginOfError * this.averageDotSize;
+        return CWTranslator._betweenMarginOfError( element, this.averageDotSize, marginOfErrorMs );
     }
-    // Given a element of length k, determine if it is a dash.
+    // returns [0=>1] accepts element length in ms
+    dotPercentage( element ){
+        return Math.min( 1.0, element / this.averageDotSize );
+    }
+    // Given a element of length k in ms, determine if it is a dash.
     isDash( element ){
+        const marginOfErrorMs = marginOfError * this.averageDotSize;
         // Ratio of dot length to dash length
         const dashDotDiff = this.averageDotSize * ( dashLength / dotLength );
-        return CWTranslator._betweenMarginOfError( element, dashDotDiff );
+        return CWTranslator._betweenMarginOfError( element, dashDotDiff, marginOfErrorMs );
     }
+    // [0=>1] Accepts element length in ms
+    dashPercentage( element ){
+        // Ratio of dot length to dash length
+        const dashDotDiff = this.averageDotSize * ( dashLength / dotLength );
+        return Math.max( 0, Math.min( 1.0, ( element ) / dashDotDiff ) );
+    }
+    // [0=>1] Percentage of a dash with a dot added. Accepts element length in ms.
+    overflowPercentage( element ){
+        const dashDotDiff = this.averageDotSize * ( ( dotLength + dashLength ) / dotLength );
+        return Math.min( 1.0, element / dashDotDiff );
+    }
+
     // Given a gap of length k, determine if it is a letter, element, or word gap
     gapType( space ){
         // Ratio of dot length to gap length

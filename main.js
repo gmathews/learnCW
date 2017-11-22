@@ -35,10 +35,39 @@ function createToneGenerator(){
     document.getElementById('silenceTime').innerHTML = 0;
     clearInterval( updater );
     updater = setInterval( () => {
-        let toneLength = audioContext.currentTime - toneStart;
+        let toneLength = ( audioContext.currentTime - toneStart ) * 1000;
+        if( toneTranslator.isDash( toneLength ) || toneTranslator.isDot( toneLength ) ){
+            document.getElementById('toneTime').style.color = 'green';
+        }else{
+            document.getElementById('toneTime').style.color = 'red';
+        }
         // Display nicely
-        let displayTime = Math.ceil( toneLength * 100 );
-        document.getElementById('toneTime').innerHTML = displayTime;
+        let displayTime = Math.ceil( toneLength );
+        document.getElementById('toneTime').innerHTML = displayTime + 'ms';
+
+        // Build fill target bar
+        let dotPercentage = toneTranslator.dotPercentage( toneLength ) * 100;
+        let dashPercentage = toneTranslator.dashPercentage( toneLength ) * 100;
+        let overflowPercentage = toneTranslator.overflowPercentage( toneLength ) * 100;
+
+        let dashBarStyle = document.getElementById('dashBar').style;
+        let dotBarStyle = document.getElementById('dotBar').style;
+        let overflowBarStyle = document.getElementById('overflowBar').style;
+
+        overflowBarStyle.width = overflowPercentage + '%';
+        dashBarStyle.width = dashPercentage + '%';
+        dotBarStyle.width = dotPercentage + '%';
+
+        let hue = dotPercentage * 1.2;
+        dotBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+
+        hue = 0;
+        // If we finished the dot, start coloring the dash
+        if( dotPercentage == 100 ){
+            hue = Math.max( 0, ( ( dashPercentage / 100 ) * ( 120 + 80 ) ) - 80 );
+        }
+
+        dashBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
     }, 10);
 }
 
@@ -60,14 +89,12 @@ function beQuiet(){
 
     let element = toneLength * 1000;
     toneTranslator.addElement( element );
-    document.getElementById('toneTime').style.color = 'green';
     if( toneTranslator.isDash( element ) ){
         document.getElementById('toneType').innerHTML = 'dah';
     }else if( toneTranslator.isDot( element ) ){
         document.getElementById('toneType').innerHTML = 'di';
     }else{ // Confusing and bad
         document.getElementById('toneType').innerHTML = ':(';
-        document.getElementById('toneTime').style.color = 'red';
     }
 
     silenceStart = audioContext.currentTime;

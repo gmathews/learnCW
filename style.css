@@ -1,7 +1,7 @@
 body, html {
     height: 100%;
     margin: auto;
-    background-color: grey;
+    background-color: darkgrey;
     /* background-image: url("gk.jpg"); */
     /* background-position: center; */
     /* background-repeat: no-repeat; */
@@ -25,12 +25,49 @@ a {
     position: fixed;
     left: 25%;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.33);
+    background: dimgrey;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     text-align: center;
     padding: 2em;
     margin: 2em;
     width: 50%;
+}
+
+#dotProgress{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25%;
+    background-color: grey;
+    border-right: 2px solid;
+}
+#dotBar{
+    width: 0;
+    height: 30px;
+}
+#dashProgress{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 75%;
+    background-color: grey;
+    border-right: 2px solid;
+}
+#dashBar{
+    width: 0;
+    height: 30px;
+}
+#overflowProgress{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: grey;
+}
+#overflowBar{
+    width: 0%;
+    height: 30px;
+    background-color: red;
 }
 
 .toneType {
