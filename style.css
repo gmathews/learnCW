@@ -83,8 +83,8 @@ a {
     position: fixed;
     right: 30%;
     top: 1em;
-    text-align: center;
-    padding: 1em;
+    text-align: right;
+    padding: 2em;
     margin: 1em;
     font-size: 150%;
 }

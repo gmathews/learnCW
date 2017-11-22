@@ -100,14 +100,15 @@ class CWTranslator{
         const gapDotDiff = this.averageDotSize * ( elementGap / dotLength );
         const LetterDotDiff = this.averageDotSize * ( minLetterGap / dotLength );
         const WordDotDiff = this.averageDotSize * ( minWordGap / dotLength );
+        const marginOfErrorMs = marginOfError * this.averageDotSize;
 
-        if( CWTranslator._betweenMarginOfError( space, gapDotDiff ) ){
+        if( CWTranslator._betweenMarginOfError( space, gapDotDiff, marginOfErrorMs ) ){
             return gapTypes.ELEMENT;
-        }else if( CWTranslator._betweenMarginOfError( space, LetterDotDiff ) ){
+        }else if( CWTranslator._betweenMarginOfError( space, LetterDotDiff, marginOfErrorMs ) ){
             return gapTypes.LETTER;
         }else if( space < LetterDotDiff ){
             return gapTypes.INVALID;
-        }else if( CWTranslator._betweenMarginOfError( space, WordDotDiff ) ){
+        }else if( CWTranslator._betweenMarginOfError( space, WordDotDiff, marginOfErrorMs ) ){
             return gapTypes.WORD;
         }else if( space > WordDotDiff ){
             return gapTypes.LOUSY_WORD;

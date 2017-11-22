@@ -32,7 +32,7 @@ function createToneGenerator(){
     currentOscillator = oscillator;
 
     // Update time
-    document.getElementById('silenceTime').innerHTML = 0;
+    document.getElementById('silenceTime').innerHTML = '0ms';
     clearInterval( updater );
     updater = setInterval( () => {
         let toneLength = ( audioContext.currentTime - toneStart ) * 1000;
@@ -101,12 +101,12 @@ function beQuiet(){
     // Update time
     clearInterval( updater );
     updater = setInterval( () => {
-        let silenceLength = audioContext.currentTime - silenceStart;
+        let silenceLength = ( audioContext.currentTime - silenceStart ) * 1000;
         // Display nicely
-        let displayTime = Math.ceil( silenceLength * 100 );
-        document.getElementById('silenceTime').innerHTML = displayTime;
+        let displayTime = Math.ceil( silenceLength );
+        document.getElementById('silenceTime').innerHTML = displayTime + 'ms';
         // At this point, no need to keep updating
-        if( toneTranslator.gapType( silenceLength * 1000 ) == gapTypes.WORD ){
+        if( toneTranslator.gapType( silenceLength ) == gapTypes.WORD ){
             clearInterval( updater );
         }
     }, 10);
