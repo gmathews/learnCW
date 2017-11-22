@@ -70,6 +70,54 @@ a {
     background-color: red;
 }
 
+#gapOverflowProgress{
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: grey;
+}
+#gapOverflowBar{
+    width: 0;
+    height: 30px;
+}
+#gapWordProgress{
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 94.5%;
+    background-color: grey;
+    border-right: 2px solid;
+}
+#gapWordBar{
+    width: 0;
+    height: 30px;
+}
+#gapLetterProgress{
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 40.5%;
+    background-color: grey;
+    border-right: 2px solid;
+}
+#gapLetterBar{
+    width: 0;
+    height: 30px;
+}
+#gapElementProgress{
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 13.5%;
+    background-color: grey;
+    border-right: 2px solid;
+}
+#gapElementBar{
+    width: 0;
+    height: 30px;
+}
+
 .toneType {
     position: fixed;
     right: 10%;
