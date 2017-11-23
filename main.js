@@ -5,6 +5,8 @@ const frequency = 600; // Tone frequency
 
 // Setup a tone generator
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const toneTranslator = new CWTranslator();
+const characterMap = new CharacterMap();
 
 let soundPlaying = false;
 let keyPressed = 0;
@@ -12,7 +14,6 @@ let currentOscillator = 0;
 let toneStart = 0;
 let silenceStart = 0;
 let updater = 0;
-let toneTranslator = new CWTranslator();
 
 // Update the width of the progress bar and if modifyColor is true, the color of it.
 // startingPercentage allows the bar to stay red until we hit the starting percentage

@@ -13,8 +13,78 @@
     </head>
     <body>
 
+        <script src="characterMap.js" type="application/javascript"></script>
         <script src="CWTranslate.js" type="application/javascript"></script>
         <script src="main.js" type="application/javascript"></script>
+        <div>
+            <table class="characterTree" summary="Where we are in the character tree">
+                <tbody>
+                    <tr>
+                        <td rowspan="8" class="treeDash">T&nbsp;—</td>
+                        <td rowspan="4" class="treeDash">M&nbsp;— —</td>
+                        <td rowspan="2" class="treeDash">O&nbsp;— — —</td>
+                        <td class="treeDash">CH&nbsp;— — — —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot">Ö&nbsp;— — — ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="treeDot" >G&nbsp;— — ·</td>
+                        <td class="treeDash">Q&nbsp;— — · —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >Z&nbsp;— — · ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="treeDot" >N&nbsp;— ·</td>
+                        <td rowspan="2" class="treeDash">K&nbsp;— · —</td>
+                        <td class="treeDash">Y&nbsp;— · — —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >C&nbsp;— · — ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="treeDot" >D&nbsp;— · ·</td>
+                        <td class="treeDash">X&nbsp;— · · —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >B&nbsp;— · · ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="8" class="treeDot" >E&nbsp;·</td>
+                        <td rowspan="4" class="treeDash">A&nbsp;· —</td>
+                        <td rowspan="2" class="treeDash">W&nbsp;· — —</td>
+                        <td class="treeDash">J&nbsp;· — — —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >P&nbsp;· — — ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="treeDot" >R&nbsp;· — ·</td>
+                        <td class="treeDash">Ä&nbsp;· — · —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >L&nbsp;· — · ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="4" class="treeDot" >I&nbsp;· ·</td>
+                        <td rowspan="2" class="treeDash">U&nbsp;· · —</td>
+                        <td class="treeDash">Ü&nbsp;· · — —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >F&nbsp;· · — ·</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="treeDot" >S&nbsp;· · ·</td>
+                        <td class="treeDash">V&nbsp;· · · —</td>
+                    </tr>
+                    <tr>
+                        <td class="treeDot" >H&nbsp;· · · ·</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="toneType">
             <p id="toneType">_</p>
         </div>
@@ -22,6 +92,7 @@
             <p id="toneTime">0ms</p>
             <p id="silenceTime">0ms</p>
         </div>
+        <!-- Progress Bars -->
         <div id="overflowProgress">
             <div id="overflowBar"></div>
         </div>
@@ -43,6 +114,8 @@
         <div id="gapElementProgress">
             <div id="gapElementBar"></div>
         </div>
+        <!-- End Progress Bars -->
+
         <div class="keyButton" onmousedown="createToneGenerator()" onmouseup="beQuiet()">
             <a id="key"  href="#">[Press Here]</a>
         </div>

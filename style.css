@@ -21,21 +21,24 @@ a {
     text-decoration: none;
 }
 
-.keyButton {
+.characterTree{
     position: fixed;
-    left: 25%;
-    bottom: 0;
-    background: dimgrey;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     text-align: center;
-    padding: 2em;
-    margin: 2em;
-    width: 50%;
+    font-size: 60%;
+    height: 45%;
+}
+.treeDot{
+    background-color: #FFFFBB;
+    width: 100px;
+}
+.treeDash{
+    background-color: #BBDDFF;
+    width: 100px;
 }
 
 #dotProgress{
     position: fixed;
-    top: 0;
+    top: 50%;
     left: 0;
     width: 14%;
     background-color: grey;
@@ -47,7 +50,7 @@ a {
 }
 #dashProgress{
     position: fixed;
-    top: 0;
+    top: 50%;
     left: 0;
     width: 42%;
     background-color: grey;
@@ -59,7 +62,7 @@ a {
 }
 #overflowProgress{
     position: fixed;
-    top: 0;
+    top: 50%;
     left: 0;
     width: 50%;
     background-color: grey;
@@ -72,7 +75,7 @@ a {
 
 #gapOverflowProgress{
     position: fixed;
-    top: 60px;
+    top: 60%;
     left: 0;
     width: 100%;
     background-color: grey;
@@ -84,7 +87,7 @@ a {
 }
 #gapWordProgress{
     position: fixed;
-    top: 60px;
+    top: 60%;
     left: 0;
     width: 98%;
     background-color: grey;
@@ -96,7 +99,7 @@ a {
 }
 #gapLetterProgress{
     position: fixed;
-    top: 60px;
+    top: 60%;
     left: 0;
     width: 42%;
     background-color: grey;
@@ -108,7 +111,7 @@ a {
 }
 #gapElementProgress{
     position: fixed;
-    top: 60px;
+    top: 60%;
     left: 0;
     width: 14%;
     background-color: grey;
@@ -119,21 +122,28 @@ a {
     height: 30px;
 }
 
-.toneType {
+.toneType{
     position: fixed;
     right: 10%;
-    top: 10%;
-    text-align: center;
-    padding: 1em;
-    margin: 1em;
+    top: 5%;
     font-size: 200%;
 }
-.toneTime {
+.toneTime{
     position: fixed;
-    right: 30%;
-    top: 1em;
+    right: 10%;
+    top: 20%;
     text-align: right;
-    padding: 2em;
-    margin: 1em;
-    font-size: 150%;
 }
+
+.keyButton {
+    position: fixed;
+    left: 25%;
+    bottom: 0;
+    background: dimgrey;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    padding: 2em;
+    margin: 2em;
+    width: 50%;
+}
+

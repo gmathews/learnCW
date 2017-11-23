@@ -43,6 +43,7 @@ class CWTranslator{
         if( this.elements.length > numberOfElementsToStore ){
             this.elements.shift();
         }
+        // TODO: Add this back in if it works
         // this._updateAverageDotSize();
     }
 
@@ -52,10 +53,6 @@ class CWTranslator{
             return prev + curr;
         }) / this.elements.length;
         this.averageDotSize = Math.max( 1, avg ); // Make sure this is never 0
-    }
-    // TODO: given some n elements, determine the symbol they represent
-    convertCodeToSymbol( elements ){
-
     }
 
     static _between( min, num, max ){
