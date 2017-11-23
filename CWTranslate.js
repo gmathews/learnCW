@@ -88,10 +88,10 @@ class CWTranslator{
         const dashDotDiff = this.averageDotSize * ( dashLength / dotLength );
         return Math.max( 0, Math.min( 1.0, ( element ) / dashDotDiff ) );
     }
-    // [0=>1] Percentage of a dash with a dot added. Accepts element length in ms.
+    // [0=>1] A dash is 84% of this bar. Accepts element length in ms.
     overflowPercentage( element ){
-        const overflowDotDiff = this.averageDotSize * ( ( dotLength + dashLength ) / dotLength );
-        return Math.min( 1.0, element / overflowDotDiff );
+        const overflowDotDiff = this.averageDotSize * ( dashLength / dotLength );
+        return Math.min( 1.0, ( 0.84 * element ) / overflowDotDiff );
     }
 
     // [0=>1] length in ms.
@@ -109,10 +109,10 @@ class CWTranslator{
         const wordDotDiff = this.averageDotSize * ( minWordGap / dotLength );
         return Math.min( 1.0, space / wordDotDiff );
     }
-    // [0=>1] length in ms. [0-94.5] is word % in this percentage
+    // [0=>1] length in ms. [0-98] is word % in this percentage
     gapOverflowPercentage( space ){
         const overflowDotDiff = this.averageDotSize * ( ( minWordGap ) / dotLength );
-        return Math.min( 1.0, (0.945*space) / overflowDotDiff );
+        return Math.min( 1.0, ( 0.98 * space ) / overflowDotDiff );
     }
 
     // Given a gap of length k, determine if it is a letter, element, or word gap

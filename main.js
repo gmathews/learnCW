@@ -14,6 +14,19 @@ let silenceStart = 0;
 let updater = 0;
 let toneTranslator = new CWTranslator();
 
+// Update the width of the progress bar and if modifyColor is true, the color of it.
+// startingPercentage allows the bar to stay red until we hit the starting percentage
+function updateProgressBar( percentage, styleId, modifyColor=true, startingPercentage=0 ){
+    let style = document.getElementById(styleId).style;
+    style.width = ( percentage * 100 ) + '%';
+    if( modifyColor ){
+        // 0 - 120 (red to green)
+        let hue = Math.max( 0, percentage - startingPercentage ) *
+            ( 120 / ( 1 - startingPercentage ) );
+        style.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+    }
+}
+
 // Reusable tone generation
 function createToneGenerator(){
     if( soundPlaying ){
@@ -46,28 +59,9 @@ function createToneGenerator(){
         document.getElementById('toneTime').innerHTML = displayTime + 'ms';
 
         // Build fill target bar
-        let dotPercentage = toneTranslator.dotPercentage( toneLength ) * 100;
-        let dashPercentage = toneTranslator.dashPercentage( toneLength ) * 100;
-        let overflowPercentage = toneTranslator.overflowPercentage( toneLength ) * 100;
-
-        let dashBarStyle = document.getElementById('dashBar').style;
-        let dotBarStyle = document.getElementById('dotBar').style;
-        let overflowBarStyle = document.getElementById('overflowBar').style;
-
-        overflowBarStyle.width = overflowPercentage + '%';
-        dashBarStyle.width = dashPercentage + '%';
-        dotBarStyle.width = dotPercentage + '%';
-
-        let hue = dotPercentage * 1.2;
-        dotBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
-
-        hue = 0;
-        // If we finished the dot, start coloring the dash
-        if( dotPercentage == 100 ){
-            hue = Math.max( 0, ( ( dashPercentage / 100 ) * ( 120 + 80 ) ) - 80 );
-        }
-
-        dashBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+        updateProgressBar( toneTranslator.dotPercentage( toneLength ), 'dotBar' );
+        updateProgressBar( toneTranslator.dashPercentage( toneLength ), 'dashBar', true, 0.66 );
+        updateProgressBar( toneTranslator.overflowPercentage( toneLength ), 'overflowBar', false );
     }, 10);
 }
 
@@ -106,32 +100,15 @@ function beQuiet(){
         let displayTime = Math.ceil( silenceLength );
         document.getElementById('silenceTime').innerHTML = displayTime + 'ms';
 
-
         // Build gap target bar
-        let gapOverflowPercentage = toneTranslator.gapOverflowPercentage( silenceLength ) * 100;
-        let gapWordPercentage = toneTranslator.gapWordPercentage( silenceLength ) * 100;
-        let gapLetterPercentage = toneTranslator.gapLetterPercentage( silenceLength ) * 100;
-        let gapElementPercentage = toneTranslator.gapElementPercentage( silenceLength ) * 100;
-
-        let gapOverflowBarStyle = document.getElementById( 'gapOverflowBar' ).style;
-        let gapWordBarStyle = document.getElementById( 'gapWordBar' ).style;
-        let gapLetterBarStyle = document.getElementById( 'gapLetterBar' ).style;
-        let gapElementBarStyle = document.getElementById( 'gapElementBar' ).style;
-
-        gapOverflowBarStyle.width = gapOverflowPercentage + '%';
-        gapWordBarStyle.width = gapWordPercentage + '%';
-        gapLetterBarStyle.width = gapLetterPercentage + '%';
-        gapElementBarStyle.width = gapElementPercentage + '%';
-
-        let hue = gapElementPercentage * 1.2;
-        gapElementBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
-        hue = gapLetterPercentage * 1.2;
-        gapLetterBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
-        hue = gapWordPercentage * 1.2;
-        gapWordBarStyle.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+        updateProgressBar( toneTranslator.gapElementPercentage( silenceLength ), 'gapElementBar' );
+        updateProgressBar( toneTranslator.gapLetterPercentage( silenceLength ), 'gapLetterBar', true, 0.66 );
+        updateProgressBar( toneTranslator.gapWordPercentage( silenceLength ), 'gapWordBar', true, 0.66 );
+        let gapOverflowPercentage = toneTranslator.gapOverflowPercentage( silenceLength );
+        updateProgressBar( gapOverflowPercentage, 'gapOverflowBar', false );
 
         // At this point, no need to keep updating
-        if( gapOverflowPercentage >= 100 ){
+        if( gapOverflowPercentage >= 1 ){
             clearInterval( updater );
         }
     }, 10);
