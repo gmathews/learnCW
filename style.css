@@ -35,6 +35,14 @@ a {
     background-color: #BBDDFF;
     width: 100px;
 }
+.treeDotHigh{
+    background-color: #FFFF00;
+    width: 100px;
+}
+.treeDashHigh{
+    background-color: #7799FF;
+    width: 100px;
+}
 
 #dotProgress{
     position: fixed;
@@ -124,15 +132,22 @@ a {
 
 .toneType{
     position: fixed;
-    right: 10%;
+    left: 30%;
     top: 5%;
     font-size: 200%;
 }
 .toneTime{
     position: fixed;
+    left: 30%;
+    top: 20%;
+    text-align: right;
+}
+.currentSentence{
+    position: fixed;
     right: 10%;
     top: 20%;
     text-align: right;
+    font-size: 200%;
 }
 
 .keyButton {

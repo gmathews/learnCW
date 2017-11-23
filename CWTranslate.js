@@ -1,6 +1,6 @@
 // Configuration
 const desiredWPM = 4; // Desired Words Per Minute
-const marginOfError = 0.10; // 10% margin of error to still count elements as dots
+const marginOfError = 0.25; // 10% margin of error to still count elements as dots
 const numberOfElementsToStore = 5; // Number of elements to calculate average
 
 // End Configuration

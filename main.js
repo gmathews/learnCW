@@ -14,6 +14,8 @@ let currentOscillator = 0;
 let toneStart = 0;
 let silenceStart = 0;
 let updater = 0;
+let currentSentence = '';
+let currentChar = '';
 
 // Update the width of the progress bar and if modifyColor is true, the color of it.
 // startingPercentage allows the bar to stay red until we hit the starting percentage
@@ -44,6 +46,24 @@ function createToneGenerator(){
     oscillator.start();
     soundPlaying = true;
     currentOscillator = oscillator;
+
+    // If we had been quiet long enough, we are making a new letter
+    let silenceLength = ( audioContext.currentTime - silenceStart ) * 1000;
+    let gapLetterPercentage = toneTranslator.gapLetterPercentage( silenceLength );
+    let gapWordPercentage = toneTranslator.gapWordPercentage( silenceLength );
+    if( gapLetterPercentage >= 1 ){
+        if( gapWordPercentage >= 1 ){
+            currentSentence += ' ';
+        }
+        currentSentence += characterMap.currentChar( currentChar );
+        // Only keep the last n chars
+        if( currentSentence.length > 100 ){
+            currentSentence = currentSentence.slice( -99 );
+        }
+        document.getElementById( 'currentSentence' ).innerHTML = currentSentence + '&lt;';
+        clearHighlights( currentChar );
+        currentChar = '';
+    }
 
     // Update time
     document.getElementById('silenceTime').innerHTML = '0ms';
@@ -86,12 +106,15 @@ function beQuiet(){
     toneTranslator.addElement( element );
     if( toneTranslator.isDash( element ) ){
         document.getElementById('toneType').innerHTML = 'dah';
+        currentChar += '3';
     }else if( toneTranslator.isDot( element ) ){
         document.getElementById('toneType').innerHTML = 'di';
+        currentChar += '1';
     }else{ // Confusing and bad
         document.getElementById('toneType').innerHTML = ':(';
     }
 
+    highlightCurrentChar( currentChar );
     silenceStart = audioContext.currentTime;
     // Update time
     clearInterval( updater );
@@ -103,7 +126,8 @@ function beQuiet(){
 
         // Build gap target bar
         updateProgressBar( toneTranslator.gapElementPercentage( silenceLength ), 'gapElementBar' );
-        updateProgressBar( toneTranslator.gapLetterPercentage( silenceLength ), 'gapLetterBar', true, 0.66 );
+        let gapLetterPercentage = toneTranslator.gapLetterPercentage( silenceLength );
+        updateProgressBar( gapLetterPercentage, 'gapLetterBar', true, 0.66 );
         updateProgressBar( toneTranslator.gapWordPercentage( silenceLength ), 'gapWordBar', true, 0.66 );
         let gapOverflowPercentage = toneTranslator.gapOverflowPercentage( silenceLength );
         updateProgressBar( gapOverflowPercentage, 'gapOverflowBar', false );
@@ -121,39 +145,67 @@ function printKey( intro, keycode ){
 // Only accept the keys we want
 function filterKey( key ){
     // Tab messes things up
-    return key == 'Tab' || key != 'Shift'; // TODO: only use shift for debug
+    return key === 'Tab' || key !== 'Shift'; // TODO: only use shift for debug
 
 }
 
 function buildTable(){
     function parseTree( item, tdId ){
-        if( item.hasOwnProperty('1') ){
-            if( item['1'].hasOwnProperty('res') ){
-                const td1 = document.getElementById( tdId + '1' );
-                if( td1 == null ){
-                    console.log( 'missing td ', tdId, '1', ' for ', item[ '1' ].res );
-                }else{
-                    td1.innerHTML = item[ '1' ].res;
+        function check( c ){
+            if( item.hasOwnProperty( c ) ){
+                if( item[ c ].hasOwnProperty('res') ){
+                    const td = document.getElementById( tdId + c );
+                    if( td === null ){
+                        // console.log( 'missing td ', tdId, c, ' for ', item[ c ].res );
+                    }else{
+                        td.innerHTML = item[ c ].res;
+                    }
                 }
+                parseTree( item[ c ], tdId + c );
             }
-            parseTree( item['1'], tdId + '1' );
         }
-        if( item.hasOwnProperty('3') ){
-            if( item['3'].hasOwnProperty('res') ){
-                const td3 = document.getElementById( tdId + '3' );
-                if( td3 == null ){
-                    console.log( 'missing td ', tdId, '3', ' for ', item[ '3' ].res );
-                }else{
-                    td3.innerHTML = item[ '3' ].res;
-                }
-            }
-            parseTree( item['3'], tdId + '3' );
-        }
+        check( '1' );
+        check( '3' );
     }
     parseTree( characterMap.searchTree, '' );
 }
 
 buildTable();
+
+// String is 1 for dot and 3 for dash
+function highlightCurrentChar( letter ){
+    if( letter === '' ){
+        return;
+    }
+    const td = document.getElementById( letter );
+    if( td === null ){
+        console.log( 'Cannot highlight td ', letter );
+    }else{
+        if( letter.slice( -1 ) === '1' ){
+            td.classList.add( 'treeDotHigh' );
+        }else{
+            td.classList.add( 'treeDashHigh' );
+        }
+    }
+}
+function clearHighlights( oldLetter ){
+    if( oldLetter === '' ){
+        return;
+    }
+    const td = document.getElementById( oldLetter );
+    if( td === null ){
+        console.log( 'Cannot highlight td ', oldLetter );
+    }else{
+        if( oldLetter.slice( -1 ) === '1' ){
+            td.classList.remove( 'treeDotHigh' );
+        }else{
+            td.classList.remove( 'treeDashHigh' );
+        }
+    }
+    if( oldLetter.length > 1 ){
+        clearHighlights( oldLetter.slice( 0, -1 ) );
+    }
+}
 
 // On while key is down make a tone
 window.addEventListener( 'keydown', function( downEvent ){
@@ -191,7 +243,7 @@ window.addEventListener( 'keyup', function( upEvent ){
     const upKeycode = upEvent.key;
     // printKey( 'UP: ', upKeycode );
     // Stop making noise
-    if( upKeycode == keyPressed ){
+    if( upKeycode === keyPressed ){
         beQuiet();
     }
 }, {capture: true} );

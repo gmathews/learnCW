@@ -107,5 +107,18 @@ class CharacterMap{
         };
     }
 
+    // 1 for dot and 3 for dash to lookup in the search table
+    currentChar( elements, item=this.searchTree ){
+        if( elements.length < 1 ){
+            return '';
+        }
+        console.log( elements );
+        if( elements.length === 1 ){
+            return item[ elements[0] ].res
+        }else{
+            return this.currentChar( elements.slice( 1 ), item[ elements[0] ] );
+        }
+    }
+
 
 }
