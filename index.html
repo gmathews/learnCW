@@ -13,73 +13,70 @@
     </head>
     <body>
 
-        <script src="characterMap.js" type="application/javascript"></script>
-        <script src="CWTranslate.js" type="application/javascript"></script>
-        <script src="main.js" type="application/javascript"></script>
         <div>
             <table class="characterTree" summary="Where we are in the character tree">
-                <tbody>
+                <tbody id="characterTable">
                     <tr>
-                        <td rowspan="8" class="treeDash">T&nbsp;—</td>
-                        <td rowspan="4" class="treeDash">M&nbsp;— —</td>
-                        <td rowspan="2" class="treeDash">O&nbsp;— — —</td>
-                        <td class="treeDash">CH&nbsp;— — — —</td>
+                        <td id="3" rowspan="8" class="treeDash">T&nbsp;—</td>
+                        <td id="33" rowspan="4" class="treeDash">M&nbsp;— —</td>
+                        <td id="333" rowspan="2" class="treeDash">O&nbsp;— — —</td>
+                        <td id="3333" class="treeDash">CH&nbsp;— — — —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot">Ö&nbsp;— — — ·</td>
+                        <td id="3331" class="treeDot">Ö&nbsp;— — — ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="2" class="treeDot" >G&nbsp;— — ·</td>
-                        <td class="treeDash">Q&nbsp;— — · —</td>
+                        <td id="331" rowspan="2" class="treeDot" >G&nbsp;— — ·</td>
+                        <td id="3313" class="treeDash">Q&nbsp;— — · —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >Z&nbsp;— — · ·</td>
+                        <td id="3311" class="treeDot" >Z&nbsp;— — · ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="4" class="treeDot" >N&nbsp;— ·</td>
-                        <td rowspan="2" class="treeDash">K&nbsp;— · —</td>
-                        <td class="treeDash">Y&nbsp;— · — —</td>
+                        <td id="31" rowspan="4" class="treeDot" >N&nbsp;— ·</td>
+                        <td id="313" rowspan="2" class="treeDash">K&nbsp;— · —</td>
+                        <td id="3133" class="treeDash">Y&nbsp;— · — —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >C&nbsp;— · — ·</td>
+                        <td id="3131" class="treeDot" >C&nbsp;— · — ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="2" class="treeDot" >D&nbsp;— · ·</td>
-                        <td class="treeDash">X&nbsp;— · · —</td>
+                        <td id="311" rowspan="2" class="treeDot" >D&nbsp;— · ·</td>
+                        <td id="3113" class="treeDash">X&nbsp;— · · —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >B&nbsp;— · · ·</td>
+                        <td id="3111" class="treeDot" >B&nbsp;— · · ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="8" class="treeDot" >E&nbsp;·</td>
-                        <td rowspan="4" class="treeDash">A&nbsp;· —</td>
-                        <td rowspan="2" class="treeDash">W&nbsp;· — —</td>
-                        <td class="treeDash">J&nbsp;· — — —</td>
+                        <td id="1" rowspan="8" class="treeDot" >E&nbsp;·</td>
+                        <td id="13" rowspan="4" class="treeDash">A&nbsp;· —</td>
+                        <td id="133" rowspan="2" class="treeDash">W&nbsp;· — —</td>
+                        <td id="1333" class="treeDash">J&nbsp;· — — —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >P&nbsp;· — — ·</td>
+                        <td id="1331" class="treeDot" >P&nbsp;· — — ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="2" class="treeDot" >R&nbsp;· — ·</td>
-                        <td class="treeDash">Ä&nbsp;· — · —</td>
+                        <td id="131" rowspan="2" class="treeDot" >R&nbsp;· — ·</td>
+                        <td id="1313" class="treeDash">Ä&nbsp;· — · —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >L&nbsp;· — · ·</td>
+                        <td id="1311" class="treeDot" >L&nbsp;· — · ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="4" class="treeDot" >I&nbsp;· ·</td>
-                        <td rowspan="2" class="treeDash">U&nbsp;· · —</td>
-                        <td class="treeDash">Ü&nbsp;· · — —</td>
+                        <td id="11" rowspan="4" class="treeDot" >I&nbsp;· ·</td>
+                        <td id="113" rowspan="2" class="treeDash">U&nbsp;· · —</td>
+                        <td id="1133" class="treeDash">Ü&nbsp;· · — —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >F&nbsp;· · — ·</td>
+                        <td id="1131" class="treeDot" >F&nbsp;· · — ·</td>
                     </tr>
                     <tr>
-                        <td rowspan="2" class="treeDot" >S&nbsp;· · ·</td>
-                        <td class="treeDash">V&nbsp;· · · —</td>
+                        <td id="111" rowspan="2" class="treeDot" >S&nbsp;· · ·</td>
+                        <td id="1113" class="treeDash">V&nbsp;· · · —</td>
                     </tr>
                     <tr>
-                        <td class="treeDot" >H&nbsp;· · · ·</td>
+                        <td id="1111" class="treeDot" >H&nbsp;· · · ·</td>
                     </tr>
                 </tbody>
             </table>
@@ -119,5 +116,9 @@
         <div class="keyButton" onmousedown="createToneGenerator()" onmouseup="beQuiet()">
             <a id="key"  href="#">[Press Here]</a>
         </div>
+
+        <script src="CharacterMap.js" type="application/javascript"></script>
+        <script src="CWTranslate.js" type="application/javascript"></script>
+        <script src="main.js" type="application/javascript"></script>
     </body>
 </html>

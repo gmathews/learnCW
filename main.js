@@ -125,6 +125,36 @@ function filterKey( key ){
 
 }
 
+function buildTable(){
+    function parseTree( item, tdId ){
+        if( item.hasOwnProperty('1') ){
+            if( item['1'].hasOwnProperty('res') ){
+                const td1 = document.getElementById( tdId + '1' );
+                if( td1 == null ){
+                    console.log( 'missing td ', tdId, '1', ' for ', item[ '1' ].res );
+                }else{
+                    td1.innerHTML = item[ '1' ].res;
+                }
+            }
+            parseTree( item['1'], tdId + '1' );
+        }
+        if( item.hasOwnProperty('3') ){
+            if( item['3'].hasOwnProperty('res') ){
+                const td3 = document.getElementById( tdId + '3' );
+                if( td3 == null ){
+                    console.log( 'missing td ', tdId, '3', ' for ', item[ '3' ].res );
+                }else{
+                    td3.innerHTML = item[ '3' ].res;
+                }
+            }
+            parseTree( item['3'], tdId + '3' );
+        }
+    }
+    parseTree( characterMap.searchTree, '' );
+}
+
+buildTable();
+
 // On while key is down make a tone
 window.addEventListener( 'keydown', function( downEvent ){
     // Do nothing if the event was already processed
