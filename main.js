@@ -47,22 +47,11 @@ function createToneGenerator(){
     soundPlaying = true;
     currentOscillator = oscillator;
 
-    // If we had been quiet long enough, we are making a new letter
     let silenceLength = ( audioContext.currentTime - silenceStart ) * 1000;
-    let gapLetterPercentage = toneTranslator.gapLetterPercentage( silenceLength );
     let gapWordPercentage = toneTranslator.gapWordPercentage( silenceLength );
-    if( gapLetterPercentage >= 1 ){
-        if( gapWordPercentage >= 1 ){
-            currentSentence += ' ';
-        }
-        currentSentence += characterMap.currentChar( currentChar );
-        // Only keep the last n chars
-        if( currentSentence.length > 100 ){
-            currentSentence = currentSentence.slice( -99 );
-        }
-        document.getElementById( 'currentSentence' ).innerHTML = currentSentence + '&lt;';
-        clearHighlights( currentChar );
-        currentChar = '';
+    // If we had been quiet long enough, we are making a new letter
+    if( gapWordPercentage >= 1 ){
+        currentSentence += ' ';
     }
 
     // Update time
@@ -98,6 +87,8 @@ function beQuiet(){
     let completedHalfWavelengths = Math.floor( toneLength / halfWavelengthDuration );
     let timeOfLastZero = toneStart + ( halfWavelengthDuration * completedHalfWavelengths );
     let timeOfNextZero = timeOfLastZero + halfWavelengthDuration;
+    let currentLetterAdded = false;
+    let clearLetter = false;
 
     currentOscillator.stop( timeOfNextZero );
     soundPlaying = false;
@@ -112,12 +103,15 @@ function beQuiet(){
         currentChar += '1';
     }else{ // Confusing and bad
         document.getElementById('toneType').innerHTML = ':(';
+        clearLetter = true;
     }
 
-    highlightCurrentChar( currentChar );
+    // This is just what it was before, so no need to change the highlighting
+    if( !clearLetter){
+        highlightCurrentChar( currentChar );
+    }
 
     silenceStart = audioContext.currentTime;
-    let currentLetterAdded = false;
     // Update time
     clearInterval( updater );
     updater = setInterval( () => {
@@ -134,8 +128,8 @@ function beQuiet(){
         let gapOverflowPercentage = toneTranslator.gapOverflowPercentage( silenceLength );
         updateProgressBar( gapOverflowPercentage, 'gapOverflowBar', false );
 
-        // Add in the letter we just made
-        if( !currentLetterAdded && gapLetterPercentage >= 1 ){
+        // Add in the letter we just made, or dump our garbage
+        if( !currentLetterAdded && ( gapLetterPercentage >= 1 || clearLetter ) ){
             currentLetterAdded = true;
             currentSentence += characterMap.currentChar( currentChar );
             // Only keep the last n chars
@@ -143,7 +137,14 @@ function beQuiet(){
                 currentSentence = currentSentence.slice( -29 );
             }
             document.getElementById( 'currentSentence' ).innerHTML = currentSentence + '&lt;';
+            clearLetter = true;
         }
+
+        if( clearLetter ){
+            clearHighlights( currentChar );
+            currentChar = '';
+        }
+
         // At this point, no need to keep updating
         if( gapOverflowPercentage >= 1 ){
             clearInterval( updater );
