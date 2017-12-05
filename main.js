@@ -1,18 +1,11 @@
-// Configuration
-const frequency = 600; // Tone frequency
-
-// End Configuration
 
 // Setup a tone generator
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const tone = new Tone();
+// Used to translate our tones into elements, letters and words
 const toneTranslator = new CWTranslator();
 const characterMap = new CharacterMap();
 
-let soundPlaying = false;
 let keyPressed = 0;
-let currentOscillator = 0;
-let toneStart = 0;
-let silenceStart = 0;
 let updater = 0;
 
 // Update the width of the progress bar and if modifyColor is true, the color of it.
@@ -30,23 +23,13 @@ function updateProgressBar( percentage, styleId, modifyColor=true, startingPerce
 
 // Reusable tone generation
 function createToneGenerator(){
-    if( soundPlaying ){
+    if( tone.soundPlaying ){
         return;
     }
 
-    const oscillator = audioContext.createOscillator();
-    // Select a frequency
-    oscillator.type = 'sine';
-    oscillator.frequency.value = frequency;
+    tone.startTone();
 
-    oscillator.connect( audioContext.destination );
-    toneStart = audioContext.currentTime;
-    oscillator.start();
-    soundPlaying = true;
-    currentOscillator = oscillator;
-
-    let silenceLength = ( audioContext.currentTime - silenceStart ) * 1000;
-    let gapWordPercentage = toneTranslator.gapWordPercentage( silenceLength );
+    let gapWordPercentage = toneTranslator.gapWordPercentage( tone.silenceLength );
     // If we had been quiet long enough, we are making a new letter
     if( gapWordPercentage >= 1 ){
         characterMap.addSpace();
@@ -56,7 +39,7 @@ function createToneGenerator(){
     document.getElementById('silenceTime').innerHTML = '0ms';
     clearInterval( updater );
     updater = setInterval( () => {
-        let toneLength = ( audioContext.currentTime - toneStart ) * 1000;
+        let toneLength = tone.toneLength;
         if( toneTranslator.isDash( toneLength ) || toneTranslator.isDot( toneLength ) ){
             document.getElementById('toneTime').style.color = 'green';
         }else{
@@ -75,22 +58,14 @@ function createToneGenerator(){
 
 // End the tone
 function beQuiet(){
-    if( !soundPlaying ){
+    if( !tone.soundPlaying ){
         return;
     }
 
-    // Calculate our stopping time
-    let halfWavelengthDuration = 0.5 / frequency;
-    let toneLength = audioContext.currentTime - toneStart;
-    let completedHalfWavelengths = Math.floor( toneLength / halfWavelengthDuration );
-    let timeOfLastZero = toneStart + ( halfWavelengthDuration * completedHalfWavelengths );
-    let timeOfNextZero = timeOfLastZero + halfWavelengthDuration;
     let currentLetterAdded = false;
+    tone.stopTone();
 
-    currentOscillator.stop( timeOfNextZero );
-    soundPlaying = false;
-
-    let element = toneLength * 1000;
+    let element = tone.toneLength;
     toneTranslator.addElement( element );
     if( toneTranslator.isDash( element ) ){
         document.getElementById('toneType').innerHTML = 'dah';
@@ -108,11 +83,10 @@ function beQuiet(){
         highlightCurrentChar( characterMap.currentElements );
     }
 
-    silenceStart = audioContext.currentTime;
     // Update time
     clearInterval( updater );
     updater = setInterval( () => {
-        let silenceLength = ( audioContext.currentTime - silenceStart ) * 1000;
+        let silenceLength = tone.silenceLength;
         // Display nicely
         let displayTime = Math.ceil( silenceLength );
         document.getElementById('silenceTime').innerHTML = displayTime + 'ms';
@@ -146,6 +120,7 @@ function beQuiet(){
         }
     }, 10);
 }
+
 function printKey( intro, keycode ){
     console.log( intro + "'" + keycode + "'" );
 }
@@ -181,8 +156,6 @@ function buildTable(){
     });
 }
 
-buildTable();
-
 // String is 1 for dot and 3 for dash
 function highlightCurrentChar( letter ){
     if( letter === '' ){
@@ -208,6 +181,9 @@ function clearHighlights(){
         }
     });
 }
+
+// Fill in our visual character tree
+buildTable();
 
 // On while key is down make a tone
 window.addEventListener( 'keydown', function( downEvent ){
