@@ -75,7 +75,7 @@ function beQuiet(){
         characterMap.addDot();
     }else{ // Confusing and bad
         document.getElementById('toneType').innerHTML = ':(';
-        characterMap.forgetCurrentLetter();
+        characterMap.forgetCurrentLetter( '❌' );
     }
 
     // Highlight our character if we have one to highlight
@@ -102,7 +102,7 @@ function beQuiet(){
 
         // Add in the letter we just made
         if( gapLetterPercentage >= 1 ){
-            characterMap.addCurrentLetter();
+            characterMap.calcAndAddCurrentLetter();
             if( !currentLetterAdded ){
                 currentLetterAdded = true; // Only do this once per letter
                 document.getElementById( 'currentSentence' ).innerHTML =

@@ -125,18 +125,25 @@ class CharacterMap{
         this.currentElements += '1';
     }
 
-    // Add what we have sounded out so far to our current sentence
-    addCurrentLetter(){
-        this.currentSentence += this.calculateCurrentChar();
+    addToSentence( c ){
+        this.currentSentence += c;
         // Only keep the last n chars
         if( this.currentSentence.length > sentenceLength ){
             this.currentSentence = this.currentSentence.slice( -( sentenceLength - 1 ) );
         }
+    }
+
+    // Add what we have sounded out so far to our current sentence
+    calcAndAddCurrentLetter(){
+        this.addToSentence( this.calculateCurrentChar() );
         this.forgetCurrentLetter();
     }
 
-    forgetCurrentLetter(){
+    forgetCurrentLetter( errorChar ){
         this.currentElements = '';
+        if( errorChar ){
+            this.addToSentence( errorChar );
+        }
     }
 
     addSpace(){
