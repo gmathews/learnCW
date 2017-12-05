@@ -14,8 +14,6 @@ let currentOscillator = 0;
 let toneStart = 0;
 let silenceStart = 0;
 let updater = 0;
-let currentSentence = '';
-let currentChar = '';
 
 // Update the width of the progress bar and if modifyColor is true, the color of it.
 // startingPercentage allows the bar to stay red until we hit the starting percentage
@@ -51,7 +49,7 @@ function createToneGenerator(){
     let gapWordPercentage = toneTranslator.gapWordPercentage( silenceLength );
     // If we had been quiet long enough, we are making a new letter
     if( gapWordPercentage >= 1 ){
-        currentSentence += ' ';
+        characterMap.addSpace();
     }
 
     // Update time
@@ -88,7 +86,6 @@ function beQuiet(){
     let timeOfLastZero = toneStart + ( halfWavelengthDuration * completedHalfWavelengths );
     let timeOfNextZero = timeOfLastZero + halfWavelengthDuration;
     let currentLetterAdded = false;
-    let clearLetter = false;
 
     currentOscillator.stop( timeOfNextZero );
     soundPlaying = false;
@@ -97,18 +94,18 @@ function beQuiet(){
     toneTranslator.addElement( element );
     if( toneTranslator.isDash( element ) ){
         document.getElementById('toneType').innerHTML = 'dah';
-        currentChar += '3';
+        characterMap.addDash();
     }else if( toneTranslator.isDot( element ) ){
         document.getElementById('toneType').innerHTML = 'di';
-        currentChar += '1';
+        characterMap.addDot();
     }else{ // Confusing and bad
         document.getElementById('toneType').innerHTML = ':(';
-        clearLetter = true;
+        characterMap.forgetCurrentLetter();
     }
 
-    // This is just what it was before, so no need to change the highlighting
-    if( !clearLetter){
-        highlightCurrentChar( currentChar );
+    // Highlight our character if we have one to highlight
+    if( !characterMap.characterCleared() ){
+        highlightCurrentChar( characterMap.currentElements );
     }
 
     silenceStart = audioContext.currentTime;
@@ -124,25 +121,23 @@ function beQuiet(){
         updateProgressBar( toneTranslator.gapElementPercentage( silenceLength ), 'gapElementBar' );
         let gapLetterPercentage = toneTranslator.gapLetterPercentage( silenceLength );
         updateProgressBar( gapLetterPercentage, 'gapLetterBar', true, 0.66 );
-        updateProgressBar( toneTranslator.gapWordPercentage( silenceLength ), 'gapWordBar', true, 0.66 );
+        updateProgressBar( toneTranslator.gapWordPercentage( silenceLength ), 'gapWordBar', true,
+            0.66 );
         let gapOverflowPercentage = toneTranslator.gapOverflowPercentage( silenceLength );
         updateProgressBar( gapOverflowPercentage, 'gapOverflowBar', false );
 
-        // Add in the letter we just made, or dump our garbage
-        if( !currentLetterAdded && ( gapLetterPercentage >= 1 || clearLetter ) ){
-            currentLetterAdded = true;
-            currentSentence += characterMap.currentChar( currentChar );
-            // Only keep the last n chars
-            if( currentSentence.length > 30 ){
-                currentSentence = currentSentence.slice( -29 );
+        // Add in the letter we just made
+        if( gapLetterPercentage >= 1 ){
+            characterMap.addCurrentLetter();
+            if( !currentLetterAdded ){
+                currentLetterAdded = true; // Only do this once per letter
+                document.getElementById( 'currentSentence' ).innerHTML =
+                    characterMap.currentSentence + '&lt;';
             }
-            document.getElementById( 'currentSentence' ).innerHTML = currentSentence + '&lt;';
-            clearLetter = true;
         }
 
-        if( clearLetter ){
-            clearHighlights( currentChar );
-            currentChar = '';
+        if( characterMap.characterCleared() ){
+            clearHighlights();
         }
 
         // At this point, no need to keep updating
@@ -162,25 +157,28 @@ function filterKey( key ){
 
 }
 
-function buildTable(){
-    function parseTree( item, tdId ){
-        function check( c ){
-            if( item.hasOwnProperty( c ) ){
-                if( item[ c ].hasOwnProperty('res') ){
-                    const td = document.getElementById( tdId + c );
-                    if( td === null ){
-                        // console.log( 'missing td ', tdId, c, ' for ', item[ c ].res );
-                    }else{
-                        td.innerHTML = item[ c ].res;
-                    }
+function parseTree( item, tdId, cb ){
+    function check( c ){
+        if( item.hasOwnProperty( c ) ){
+            if( item[ c ].hasOwnProperty('res') ){
+                const td = document.getElementById( tdId + c );
+                if( td === null ){
+                    // console.log( 'missing td ', tdId, c, ' for ', item[ c ].res );
+                }else{
+                    cb( td, c === '1', item[ c ].res );
                 }
-                parseTree( item[ c ], tdId + c );
             }
+            parseTree( item[ c ], tdId + c, cb );
         }
-        check( '1' );
-        check( '3' );
     }
-    parseTree( characterMap.searchTree, '' );
+    check( '1' );
+    check( '3' );
+}
+
+function buildTable(){
+    parseTree( characterMap.searchTree, '', ( td, c, letter ) => {
+        td.innerHTML = letter;
+    });
 }
 
 buildTable();
@@ -201,23 +199,14 @@ function highlightCurrentChar( letter ){
         }
     }
 }
-function clearHighlights( oldLetter ){
-    if( oldLetter === '' ){
-        return;
-    }
-    const td = document.getElementById( oldLetter );
-    if( td === null ){
-        console.log( 'Cannot highlight td ', oldLetter );
-    }else{
-        if( oldLetter.slice( -1 ) === '1' ){
+function clearHighlights(){
+    parseTree( characterMap.searchTree, '', ( td, isDot ) => {
+        if( isDot ){
             td.classList.remove( 'treeDotHigh' );
         }else{
             td.classList.remove( 'treeDashHigh' );
         }
-    }
-    if( oldLetter.length > 1 ){
-        clearHighlights( oldLetter.slice( 0, -1 ) );
-    }
+    });
 }
 
 // On while key is down make a tone

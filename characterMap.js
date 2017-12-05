@@ -1,3 +1,8 @@
+// Configuration
+const sentenceLength = 30;
+
+// End Configuration
+
 class CharacterMap{
     constructor(){
         this.searchTree = {
@@ -105,10 +110,45 @@ class CharacterMap{
                 }
             }
         };
+
+        // All of our elements before a letter break
+        this.currentElements = '';
+        // Store n chars for a sentence
+        this.currentSentence = '';
+    }
+
+    addDash(){
+        this.currentElements += '3';
+    }
+
+    addDot(){
+        this.currentElements += '1';
+    }
+
+    // Add what we have sounded out so far to our current sentence
+    addCurrentLetter(){
+        this.currentSentence += this.calculateCurrentChar();
+        // Only keep the last n chars
+        if( this.currentSentence.length > sentenceLength ){
+            this.currentSentence = this.currentSentence.slice( -( sentenceLength - 1 ) );
+        }
+        this.forgetCurrentLetter();
+    }
+
+    forgetCurrentLetter(){
+        this.currentElements = '';
+    }
+
+    addSpace(){
+        this.currentSentence += ' ';
+    }
+
+    characterCleared(){
+        return this.currentElements === '';
     }
 
     // 1 for dot and 3 for dash to lookup in the search table
-    currentChar( elements, item=this.searchTree ){
+    calculateCurrentChar( elements=this.currentElements, item=this.searchTree ){
         if( elements.length < 1 ){
             return '';
         }
@@ -116,7 +156,7 @@ class CharacterMap{
         if( elements.length === 1 ){
             return item[ elements[0] ].res
         }else{
-            return this.currentChar( elements.slice( 1 ), item[ elements[0] ] );
+            return this.calculateCurrentChar( elements.slice( 1 ), item[ elements[0] ] );
         }
     }
 
