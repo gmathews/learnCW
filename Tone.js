@@ -29,7 +29,6 @@ class Tone{
         let completedHalfWavelengths = Math.floor( toneLength / halfWavelengthDuration );
         let timeOfLastZero = this.toneStart + ( halfWavelengthDuration * completedHalfWavelengths );
         let timeOfNextZero = timeOfLastZero + halfWavelengthDuration;
-        let currentLetterAdded = false;
 
         this.soundPlaying = false;
         this.currentOscillator.stop( timeOfNextZero );
