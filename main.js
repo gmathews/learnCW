@@ -36,18 +36,9 @@ function createToneGenerator(){
     }
 
     // Update time
-    document.getElementById('silenceTime').innerHTML = '0ms';
     clearInterval( updater );
     updater = setInterval( () => {
         let toneLength = tone.toneLength;
-        if( toneTranslator.isDash( toneLength ) || toneTranslator.isDot( toneLength ) ){
-            document.getElementById('toneTime').style.color = 'green';
-        }else{
-            document.getElementById('toneTime').style.color = 'red';
-        }
-        // Display nicely
-        let displayTime = Math.ceil( toneLength );
-        document.getElementById('toneTime').innerHTML = displayTime + 'ms';
 
         // Build fill target bar
         updateProgressBar( toneTranslator.dotPercentage( toneLength ), 'dotBar' );
@@ -68,13 +59,10 @@ function beQuiet(){
     let element = tone.toneLength;
     toneTranslator.addElement( element );
     if( toneTranslator.isDash( element ) ){
-        document.getElementById('toneType').innerHTML = 'dah';
         characterMap.addDash();
     }else if( toneTranslator.isDot( element ) ){
-        document.getElementById('toneType').innerHTML = 'di';
         characterMap.addDot();
     }else{ // Confusing and bad
-        document.getElementById('toneType').innerHTML = ':(';
         characterMap.forgetCurrentLetter( '❌' );
     }
 
@@ -87,9 +75,6 @@ function beQuiet(){
     clearInterval( updater );
     updater = setInterval( () => {
         let silenceLength = tone.silenceLength;
-        // Display nicely
-        let displayTime = Math.ceil( silenceLength );
-        document.getElementById('silenceTime').innerHTML = displayTime + 'ms';
 
         // Build gap target bar
         updateProgressBar( toneTranslator.gapElementPercentage( silenceLength ), 'gapElementBar' );

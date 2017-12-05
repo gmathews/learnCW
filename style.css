@@ -130,18 +130,6 @@ a {
     height: 30px;
 }
 
-.toneType{
-    position: fixed;
-    left: 30%;
-    top: 5%;
-    font-size: 200%;
-}
-.toneTime{
-    position: fixed;
-    left: 30%;
-    top: 20%;
-    text-align: right;
-}
 .currentSentence{
     position: fixed;
     right: 10%;
