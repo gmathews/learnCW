@@ -15,8 +15,8 @@ const gapTypes = {
 
 class CWTranslator{
 
-    constructor(){
-        this.WPM = 5;
+    constructor( wpm=5 ){
+        this.WPM = wpm;
     }
 
     set WPM( wpm ){
